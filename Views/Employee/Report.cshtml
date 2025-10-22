@@ -1,0 +1,76 @@
+﻿
+
+    @{
+        ViewBag.Title = "Report";
+        Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+    }
+
+    <div class="card shadow-sm p-4 mt-4">
+        <h3 class="text-secondary mb-3">Generate Report</h3>
+
+        <form method="post" novalidate>
+            <div class="mb-3">
+                <label>Type</label>
+                <select name="type" class="form-select" required>
+                    <option value="Savings" @(ViewBag.SelectedType == "Savings" ? "selected" : "")>Savings</option>
+                    <option value="Loan" @(ViewBag.SelectedType == "Loan" ? "selected" : "")>Loan</option>
+                </select>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label>From Date</label>
+                    <input type="text" name="fromDate" class="form-control" placeholder="yyyy/MM/dd" pattern="\d{4}/\d{2}/\d{2}" title="Use yyyy/MM/dd" value="@(ViewBag.FromDate ?? "")" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>To Date</label>
+                    <input type="text" name="toDate" class="form-control" placeholder="yyyy/MM/dd" pattern="\d{4}/\d{2}/\d{2}" title="Use yyyy/MM/dd" value="@(ViewBag.ToDate ?? "")" required />
+                </div>
+            </div>
+
+            <button class="btn btn-secondary w-100">Generate</button>
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger mt-3">@ViewBag.Error</div>
+            }
+        </form>
+    </div>
+
+    @if (ViewBag.Transactions != null)
+    {
+        <div class="card shadow-sm p-4 mt-4">
+            <h4 class="text-secondary mb-3">Transaction Report</h4>
+            <div class="mb-2 text-muted">From: @(ViewBag.FromDate ?? "") &nbsp; To: @(ViewBag.ToDate ?? "")</div>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Transaction ID</th>
+                        <th>Account ID</th>
+                        <th>Type</th>
+                        <th>Amount (₹)</th>
+                        <th>Balance/Outstanding After</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var t in (IEnumerable<dynamic>)ViewBag.Transactions)
+                    {
+                        <tr>
+                            <td>@t.TransactionId</td>
+                            <td>@t.AccountId</td>
+                            <td>@(String.IsNullOrWhiteSpace((string)t.TransactionType) ? "N/A" : (string)t.TransactionType)</td>
+                            <td>@((decimal)t.Amount).ToString("N2")</td>
+                            <td>@(((object)t.BalanceAfter) != null ? ((decimal)t.BalanceAfter).ToString("N2") : "-")</td>
+                            <td>@(((DateTime?)t.TransactionDate).HasValue ? ((DateTime?)t.TransactionDate).Value.ToString("yyyy/MM/dd") : "-")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else if (ViewBag.Transactions != null && !((IEnumerable<dynamic>)ViewBag.Transactions).Any())
+    {
+        <div class="card shadow-sm p-4 mt-4">
+            <div class="text-muted">No transactions found for selected range.</div>
+        </div>
+    }

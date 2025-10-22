@@ -1,0 +1,68 @@
+﻿
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white text-center">
+            <h3 class="mb-0">👤 Customer Dashboard</h3>
+        </div>
+
+        <div class="card-body p-4">
+            @if (ViewBag.Message != null)
+            {
+                <div class="alert alert-warning text-center">@ViewBag.Message</div>
+            }
+            else
+            {
+                var customer = ViewBag.Customer;
+                var account = ViewBag.Account;
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5 class="fw-bold text-secondary">Customer Details</h5>
+                        <ul class="list-group shadow-sm">
+                            <li class="list-group-item"><b>Name:</b> @customer.CustName</li>
+                            <li class="list-group-item"><b>Email:</b> @customer.Email</li>
+                            <li class="list-group-item"><b>DOB:</b> @customer.DOB</li>
+                            <li class="list-group-item"><b>PAN:</b> @customer.PAN</li>
+                        </ul>
+                    </div>
+
+
+
+                    <div class="col-md-6">
+                        <h5 class="fw-bold text-secondary">Account Details</h5>
+                        @if (account != null)
+                        {
+                            <ul class="list-group shadow-sm">
+                                <li class="list-group-item"><b>Account ID:</b> @account.AccountId</li>
+                                <li class="list-group-item"><b>Account Type:</b> @account.AccountType</li>
+                                <li class="list-group-item"><b>Created At:</b> @account.CreatedAt</li>
+                            </ul>
+                        }
+                        else
+                        {
+                            <div class="alert alert-info">No savings account found.</div>
+                        }
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    @*<a href="@Url.Action("DepositWithdraw")" class="btn btn-success px-4 me-2">💰 Deposit / Withdraw</a>*@
+                    <a href="@Url.Action("ViewTransactions")" class="btn btn-info px-4 me-2">📄 View Transactions</a>
+                    <a href="@Url.Action("Transfer")" class="btn btn-success px-4 me-2">💰 Transfer Money </a>
+
+                    <a href="@Url.Action("PayEMI", "Customer")"
+                       class="btn btn-warning px-4 me-2">
+                        💰 Pay EMI
+                    </a>
+
+                    <a href="@Url.Action("ResetPassword", "Customer")" class="btn btn-danger px-4">🔑 Reset Password</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
